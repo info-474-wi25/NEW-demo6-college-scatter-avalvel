@@ -22,27 +22,72 @@ d3.csv("colleges.csv").then(data => {
 
     // 3: SET AXES SCALES
     //Your code...
+    
+    let xEarnings = d3.scaleLinear() // x variable: earnings
+        .domain([0, d3.max(data, d => d.earnings)])
+        .range([0, width]);
+
+    let yDebt = d3.scaleLinear() // y variable: debt
+        .domain([0, d3.max(data, d => d.debt)])
+        .range([height, 0]);
+
 
     // 4: PLOT POINTS
     //Your code...
+    svgScatter.selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        // .attr("cx", function(d) {
+        //     return xScatter(d["earnings"]);
+        // })
+        // .attr("cy", function(d) {
+        //     return yScatter(d["debt"]);
+        // })
+        .attr("cx", d => xEarnings(d.earnings))
+        .attr("cy", d => yDebt(d.debt))
+        .attr("r", 5);
+
 
     // 5: AXES
     // Add x-axis
     //Your code...
+    svgScatter.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xEarnings));    
     
     // Add y-axis
     //Your code...
-    
+    svgScatter.append("g")
+        .call(d3.axisLeft(yDebt));
+
 
     // 6: ADD LABELS
     // Add title
     //Your code...
+    svgScatter.append("text")
+    .attr("class", "axis-label")
+    .attr("x", width / 2) // Centered horizontally on the chart
+    .attr("y", height + (margin.bottom)) // Positioning below the x-axis
+    .text("Median Earnings ($)"); // Change as needed
     
     // Add x-axis label
     //Your code...
+    svgScatter.append("text")
+        .attr("class", "axis-label")
+        .attr("text-anchor", "middle") // Center the text
+        .attr("x", width / 2) // Centered horizontally on the chart
+        .attr("y", height + (margin.bottom)) // Positioning below the x-axis
+        .text("Median Earnings ($)"); // Change as needed
     
     // Add y-axis label
     //Your code...
+    svgScatter.append("text")
+        .attr("class", "axis-label")
+        .attr("transform", "rotate(-90)") // Rotate the text for vertical alignment
+        .attr("y", -margin.left / 2) // Position it slightly away from the axis
+        .attr("x", -height / 2) // Center it vertically
+        .text("Median Debt ($)"); // Change as needed
     
 
     // [optional challenge] 7: ADD TOOL-TIP
